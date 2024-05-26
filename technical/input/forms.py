@@ -17,6 +17,9 @@ from .models import Excel
 
 
 class NewExcelImport(forms.ModelForm):
+    """
+    HTML form to upload excel files in frontend
+    """
     class Meta:
         model = Excel
         fields = ('file',)

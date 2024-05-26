@@ -1,7 +1,7 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.files.base import File
 from django.test import TestCase
-from .forms import NewInputForm, NewExcelImport
+from .forms import NewExcelImport
 import json
 
 # Create your tests here.

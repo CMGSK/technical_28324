@@ -1,4 +1,5 @@
 from ..models import Input, Result
+from celery import shared_task
 
 
 def insert_into_db(df, id):
@@ -16,7 +17,7 @@ def insert_into_db(df, id):
             haircut=row['haircut percent'],
             daily_fee=row['Daily fee percent'],
             currency=row['currency'],
-            revenue_src=row['Revenue source'],
+            revenue_src=row['Revenue source'].strip(), # Sneaky one
             customer=row['customer'],
             expected_payment_duration=row['Expected payment duration'],
             epoch=id
@@ -27,6 +28,7 @@ def insert_into_db(df, id):
     calculate_totals(id)
 
 
+@shared_task()
 def calculate_totals(id):
     """
     Calculates the totals given an excel file insertion identified by unix time

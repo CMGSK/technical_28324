@@ -1,7 +1,127 @@
-<h1>Input</h1>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Revving</title>
+    <style>
+        .master{
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-<form enctype="multipart/form-data" method="post" action=".">
-<!--    {% csrf_token %}-->
+        .result{
+            display: flex;
+            width: 80vw;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            border: solid black 1px;
+            border-radius: 50px;
+            margin: 20px 20px 20px 20px;
+            padding: 20px 20px 20px 20px;
+        }
 
-    {{ form.as_p }}
-</form>
+        .forms{
+            display: flex;
+            height: 50vh;
+            width: 50vw;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            border: solid black 1px;
+            border-radius: 50px;
+            margin: 20px 20px 20px 20px;
+            padding: 20px 20px 20px 20px;
+        }
+
+        .insert, .fetch{
+            width: 40%;
+            height: 40%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid gray;
+            background-color: lightblue;
+            border-radius: 20px;
+            padding-left: 10px;
+            padding-top: 10px;
+            padding-right: 5px;
+            padding-bottom: 5px;
+        }
+
+        table{
+            border: solid 2px #777777;
+            width: 70%;
+        }
+        th{
+            background-color: #bbbbbb;
+            font-weight: bolder;
+        }
+        td{
+            background-color: #EEEEEE;
+            text-align: center;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        form{
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Input Frontend</h1>
+    <p>'/input' as endpoint for updating an EXCEL file</p>
+    <p>'/__ID__' as endpoint to get the results for an ID upload</p>
+    <br>
+    <hr>
+    <br>
+    <div class="master">
+        <div class="forms">
+            <div class="insert">
+                <form name="post_ws" enctype="multipart/form-data" method="post" action="/input/" target="/dashboard/">
+                    {{ form.as_p }}
+                    <input type="submit" value="Insert">
+                </form>
+            </div>
+            <div class="fetch">
+                <form name="select_ws" method="get" action="/dashboard/">
+                    {{ select.as_p }}
+                    <input type="submit" value="Get data">
+                </form>
+            </div>
+        </div>
+            {% if response %}
+        <div class="result">
+            <h3>ID: {{response.1.epoch}}</h3>
+            <br>
+                <table>
+                    <tr>
+                        <th>Revenue Source</th>
+                        <th>Total Value</th>
+                        <th>Advance</th>
+                        <th>Expected Fee</th>
+<!--                        <th>Excel Identifier</th>-->
+                    </tr>
+                    {% for item in response %}
+                    <tr>
+                        <td class="c_src">{{ item.revenue_src }}</td>
+                        <td>{{ item.value|floatformat:3 }}</td>
+                        <td>{{ item.advance|floatformat:3 }}</td>
+                        <td>{{ item.expected_fee|floatformat:3 }}</td>
+<!--                        <td>{{ item.epoch }}</td>-->
+                    </tr>
+                    {% endfor %}
+
+                </table>
+        </div>
+            {% endif %}
+    </div>
+</body>
+</html>

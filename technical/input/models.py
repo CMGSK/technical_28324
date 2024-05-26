@@ -80,6 +80,14 @@ class Excel(models.Model):
     """
     file = models.FileField(blank=False, null=False)
 
+
+class ResultFromTargetId(models.Model):
+    """
+    Structure of the result from id form.
+    """
+    epoch = models.IntegerField(blank=False, null=False, name="Id")
+
+
 # class InputResource(resources.ModelResource):
 #     class Meta:
 #         model = Input

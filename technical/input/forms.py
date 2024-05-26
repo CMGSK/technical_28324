@@ -1,5 +1,5 @@
 from django import forms
-from .models import Excel
+from .models import Excel, ResultFromTargetId
 
 
 # class NewInputForm(forms.ModelForm):
@@ -23,3 +23,12 @@ class NewExcelImport(forms.ModelForm):
     class Meta:
         model = Excel
         fields = ('file',)
+
+
+class NewSelectForm(forms.ModelForm):
+    """
+    HTML form to request a result in frontend
+    """
+    class Meta:
+        model = ResultFromTargetId
+        fields = ('Id',)

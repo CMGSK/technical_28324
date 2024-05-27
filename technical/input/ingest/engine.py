@@ -1,14 +1,20 @@
+import pandas as pd
+
 from ..models import Input, Result
 from celery import shared_task
+from typing import Union
 
 
-def insert_into_db(df, id):
+def insert_into_db(df, id) -> Union[bool, dict]:
     """
     Insert excel file into database.
     :param df: pandas excel file instance
     :param id: epoch identifier
     :return:
     """
+    if not isinstance(df, pd.DataFrame):
+        return {'error': f"DataFrame object was expected, type {type(df)} received"}
+
     inputs = [
         Input(  # TODO: avoid case sensitivity?
             date=row['date'],
@@ -17,15 +23,21 @@ def insert_into_db(df, id):
             haircut=row['haircut percent'],
             daily_fee=row['Daily fee percent'],
             currency=row['currency'],
-            revenue_src=row['Revenue source'].strip(), # Sneaky one
+            revenue_src=row['Revenue source'].strip(),  # This was a sneaky one
             customer=row['customer'],
             expected_payment_duration=row['Expected payment duration'],
             epoch=id
         )
         for _, row in df.iterrows()
     ]
-    Input.objects.bulk_create(inputs)
+
+    try:
+        Input.objects.bulk_create(inputs)
+    except Exception as err: #TODO: Define non generic exception
+        return {'error': str(err)}
+
     calculate_totals(id)
+    return True
 
 
 @shared_task()
@@ -36,9 +48,13 @@ def calculate_totals(id):
     :return: void
     """
     totals = []
+    # Retrieve sources as flat list
     inputs = list(Input.objects.filter(epoch=id).values_list('revenue_src', flat=True).distinct())
+
+    #I'd use a try block and log within the app that the calculation failed and why, since it would probably be caused
+    #by wrong data provided by the user.
     for src in inputs:
-        data = Input.objects.all().filter(epoch=id, revenue_src=src).values()  # Is the all necessary?
+        data = Input.objects.filter(epoch=id, revenue_src=src).values()
         arr_advances = []
         arr_fees = []
         value = 0

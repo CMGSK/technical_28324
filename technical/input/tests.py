@@ -183,7 +183,7 @@ class WebServicesTest(APITestCase):
         self.assertEqual(type(r.data), list)
         self.assertEqual(json.dumps(r.data[0]), str(result))
 
-    #TODO: test correct results insert
+    #TODO: test_ws_excel_correct_format_with_wrong_content
 
 class IngestionEngineTest(TestCase):
     def test_ingestion_works(self):
